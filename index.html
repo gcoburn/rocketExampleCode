@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Send chat</title>
+	<script src=
+        "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+	</script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script>"https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js"</script>
+    <script>"https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js"</script>
+    <script>"https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"</script>
+    <script>"https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js"</script>
+
+</head>
+
+<body class="w3-container" style="margin-top: 50px;
+	width: 50%; height:auto;">
+	
+	<div class="w3-card-4">
+		<div class="w3-container w3-blue">
+		  <h2>RTDB form</h2>
+		</div>
+		<form name="formRTDB" id="formRTDB" class="w3-container">
+		  <p>      
+		  <label class="w3-text-blue"><b>Name</b></label>
+		  <input class="w3-input w3-border w3-sand" id="nameRTDB" name="nameRTDB" type="text"></p>
+		  <p>      
+		  <label class="w3-text-blue"><b>Message</b></label>
+		  <input class="w3-input w3-border w3-sand" id="messageRTDB" name="messageRTDB" type="text"></p>
+		  <p>
+			<input class="w3-btn w3-blue" id="submitRTDB" name="submitRTDB" type="button" value="Send Chat">
+		</form>
+	  </div>
+
+&nbsp;
+
+<body class="w3-container" style="margin-top: 50px;
+	width: 50%; height:auto;">
+	
+	<div class="w3-card-4">
+		<div class="w3-container w3-green">
+		  <h2>Firestore form</h2>
+		</div>
+		<form name="formFS" id="formFS" class="w3-container">
+		  <p>      
+		  <label class="w3-text-green"><b>Name</b></label>
+		  <input class="w3-input w3-border w3-sand" id="nameFS" name="nameFS" type="text"></p>
+		  <p>      
+		  <label class="w3-text-green"><b>Message</b></label>
+		  <input class="w3-input w3-border w3-sand" id="messageFS" name="messageFS" type="text"></p>
+		  <p>
+			<input class="w3-btn w3-green" id="submitFS" name="submitFS" type="button" value="Send Chat">
+		</form>
+	  </div>
+
+
+
+    <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+    import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+    import { getFirestore, collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore.js"
+    
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDafHGwai-amdFpEuAewyccqtkyIN4AA_c",
+        authDomain: "rocketchatapp-9a539.firebaseapp.com",
+        databaseURL: "https://rocketchatapp-9a539-default-rtdb.firebaseio.com",
+        projectId: "rocketchatapp-9a539",
+        storageBucket: "rocketchatapp-9a539.appspot.com",
+        messagingSenderId: "713558812117",
+        appId: "1:713558812117:web:d6d3cf835eaba7c4f1095c"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const rtdb = getDatabase(app);
+    const fsdb = getFirestore(app);
+
+    //react on submit rtdb button action
+    document.getElementById("submitRTDB").addEventListener('click', function writeRTDBData(nameRTDB, messageRTDB) {
+        
+        //convert input fields to variables for writing to RTDB
+        nameRTDB = document.getElementById("nameRTDB").value
+        messageRTDB = document.getElementById("messageRTDB").value
+        //write to rtdb 
+            push(ref(rtdb, 'chat/' ), {
+                name: nameRTDB,
+                message: messageRTDB,
+            });
+            alert("name: " + nameRTDB + " and message: " + messageRTDB + " written!")
+        })
+
+    //react to submit fs button action
+    document.getElementById("submitFS").addEventListener('click', async function writeFSData(nameFS, messageFS) {
+        nameFS = document.getElementById("nameFS").value
+        messageFS = document.getElementById("messageFS").value
+
+        try {
+        const docRef = await addDoc(collection(fsdb, "chat"), {
+            name: nameFS,
+            message: messageFS
+        });
+        alert("name: " + nameFS + " and message: " + messageFS + " written!")
+            console.log("Document written with ID: ", docRef.id);
+                } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    })
+    </script>
+</body>
+
+</html>
